@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 const User = mongoose.model('User', userSchema);
 
 export const createUser = async (req, res) => {
-  const { email, password} = req.body;
+  const { email, password, name} = req.body;
 
   const existingUser = await User.findOne({ email: email });
 
@@ -26,6 +26,7 @@ export const createUser = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt)
 
     const newUser = new User({
+        name,
         email,
         password: passwordHash
     });
