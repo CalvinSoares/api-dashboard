@@ -6,13 +6,9 @@ import jwt from 'jsonwebtoken';
 const User = mongoose.model('User', userSchema);
 
 export const createUser = async (req, res) => {
-  const { name, email, password} = req.body;
+  const { email, password} = req.body;
 
   const existingUser = await User.findOne({ email: email });
-
-    if(!name) {
-        return res.status(422).json({ msg: 'O nome é obrigatório' })
-    }
 
     if(!email) {
         return res.status(422).json({ msg: 'O email é obrigatório' })
@@ -29,8 +25,7 @@ export const createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(12)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    const newUser = new User({ 
-        name,
+    const newUser = new User({
         email,
         password: passwordHash
     });
@@ -87,7 +82,7 @@ export const loginUser = async (req, res) => {
             }, 
             secret,
         )
-        res.status(200).json({ msg: 'Autenticação foi um sucesso', token })
+        res.status(200).json({ msg: 'Autenticação foi um sucesso', token, _id: user._id })
     } catch (err) {
         console.error('Error ao logar', err)
         res.status(500).json({ msg: 'Aconteceu um erro no servidor, tente novamente mais tarde' })
@@ -96,6 +91,8 @@ export const loginUser = async (req, res) => {
 
 export const privateRoute = async (req, res) => {
     const id = req.params.id;
+
+    console.log('ID do usuário:', id);
 
     try {
         const user = await User.findById(id, '-password');
