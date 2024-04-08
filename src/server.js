@@ -5,7 +5,7 @@ import cors from 'cors';
 import router from './routes/routes.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 dotenv.config();
 
@@ -21,10 +21,6 @@ mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@dashboard.ta1i6cz.mongod
 
 app.use(express.json())
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+app.use(cors())
 
 app.use('/', router)
