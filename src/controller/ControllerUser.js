@@ -90,6 +90,23 @@ export const loginUser = async (req, res) => {
     }
 }
 
+export const deleteUser = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(id)
+
+        if (!deletedUser) {
+            return res.status(404).json({ msg: "Usuario não encontrado" })
+        }
+
+        res.status(200).json({ msg: 'Usuário deletado com sucesso' });
+    } catch (err) {
+        console.error('Erro ao deletar usuário:', err);
+        res.status(500).json({ err: 'Erro interno do servidor' });
+    }
+}
+
 export const privateRoute = async (req, res) => {
     const id = req.params.id;
 
@@ -125,6 +142,7 @@ export const checkToken = (req, res, next) => {
 
         next()
     } catch (err) {
-        res.status(400).json({ msg: "Token inválido" })
+        console.error('Erro ao verificar o token:', err);
+        res.status(401).json({ msg: "Token inválido" })
     }
 }
